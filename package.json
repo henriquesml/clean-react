@@ -6,6 +6,7 @@
   "author": "Henrique Schmeller <henrique_schmeller@hotmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^26.0.14",
     "@types/node": "^14.11.10",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "eslint": "^7.11.0",
@@ -15,10 +16,11 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "git-commit-msg-linter": "^3.0.0",
+    "husky": "^4.3.0",
+    "jest": "^26.5.3",
+    "lint-staged": "^10.4.2",
+    "ts-jest": "^26.4.1",
     "typescript": "^4.0.3"
   },
-  "dependencies": {
-    "husky": "^4.3.0",
-    "lint-staged": "^10.4.2"
-  }
+  "dependencies": {}
 }
