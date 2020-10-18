@@ -4,5 +4,8 @@
   "main": "index.js",
   "repository": "git@github.com:henriquesml/clean-react.git",
   "author": "Henrique Schmeller <henrique_schmeller@hotmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "git-commit-msg-linter": "^3.0.0"
+  }
 }
