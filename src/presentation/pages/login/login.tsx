@@ -2,8 +2,8 @@ import React from 'react'
 import Styles from './login-styles.scss'
 import {
   LoginHeader as Header,
-  Spinner,
   Input,
+  FormStatus,
   Footer
 } from '@/presentation/components'
 
@@ -30,11 +30,7 @@ const Login: React.FC = () => {
         <span className={Styles.link}>
           Não possui um conta? Crie uma agora mesmo!
         </span>
-
-        <div className={Styles.errorWrap}>
-          <Spinner className={Styles.spinner}/>
-          <span className={Styles.error}>Error</span>
-        </div>
+        <FormStatus />
       </form>
       <Footer />
     </div>
