@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
+import faker from 'faker'
 import Login from './login'
 import { ValidationSpy } from '@/presentation/test'
 
@@ -59,28 +60,32 @@ describe('Componente login', () => {
   test('Deve chamar o validador para o campo email', () => {
     const { sut, validationSpy } = MakeSut()
     const emailInput = sut.getByTestId('email')
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
+    const email = faker.internet.email()
+    fireEvent.input(emailInput, { target: { value: email } })
     expect(validationSpy.fieldName).toEqual('email')
   })
 
   test('Deve chamar o validador com o valor correto para o email', () => {
     const { sut, validationSpy } = MakeSut()
     const emailInput = sut.getByTestId('email')
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
-    expect(validationSpy.fieldValue).toEqual('any_email')
+    const email = faker.internet.email()
+    fireEvent.input(emailInput, { target: { value: email } })
+    expect(validationSpy.fieldValue).toEqual(email)
   })
 
   test('Deve chamar o validador para o campo senha', () => {
     const { sut, validationSpy } = MakeSut()
     const passwordInput = sut.getByTestId('password')
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
+    const password = faker.internet.password()
+    fireEvent.input(passwordInput, { target: { value: password } })
     expect(validationSpy.fieldName).toEqual('password')
   })
 
   test('Deve chamar o validador com o valor correto para a senha', () => {
     const { sut, validationSpy } = MakeSut()
     const passwordInput = sut.getByTestId('password')
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
-    expect(validationSpy.fieldValue).toEqual('any_password')
+    const password = faker.internet.password()
+    fireEvent.input(passwordInput, { target: { value: password } })
+    expect(validationSpy.fieldValue).toEqual(password)
   })
 })
