@@ -89,4 +89,40 @@ describe('Componente login', () => {
     const passwordStatus = sut.getByTestId('password-status')
     expect(passwordStatus.textContent).toBe('🔴')
   })
+
+  test('Deve mostrar sucesso no help do input do email quando a validação falhar', () => {
+    const { sut, validationStub } = MakeSut()
+    const emailInput = sut.getByTestId('email')
+    validationStub.errorMessage = null
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+    const emailStatus = sut.getByTestId('email-status')
+    expect(emailStatus.title).toBe('Tudo certo!')
+  })
+
+  test('Deve mostrar o status de sucesso no input do email quando a validação falhar', () => {
+    const { sut, validationStub } = MakeSut()
+    const emailInput = sut.getByTestId('email')
+    validationStub.errorMessage = null
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+    const emailStatus = sut.getByTestId('email-status')
+    expect(emailStatus.textContent).toBe('💚')
+  })
+
+  test('Deve mostrar sucesso no help do input da senha quando a validação falhar', () => {
+    const { sut, validationStub } = MakeSut()
+    const passwordInput = sut.getByTestId('password')
+    validationStub.errorMessage = null
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } })
+    const passwordStatus = sut.getByTestId('password-status')
+    expect(passwordStatus.title).toBe('Tudo certo!')
+  })
+
+  test('Deve mostrar o status de sucesso no input da senha quando a validação falhar', () => {
+    const { sut, validationStub } = MakeSut()
+    const passwordInput = sut.getByTestId('password')
+    validationStub.errorMessage = null
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } })
+    const passwordStatus = sut.getByTestId('password-status')
+    expect(passwordStatus.textContent).toBe('💚')
+  })
 })
