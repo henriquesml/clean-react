@@ -13,4 +13,24 @@ describe('Componente login', () => {
     const submitButton = getByTestId('submit') as HTMLButtonElement
     expect(submitButton.disabled).toBe(true)
   })
+  test('O status do input de email deve estar com status obrigatório ao inciar', () => {
+    const { getByTestId } = render(<Login />)
+    const emailStatus = getByTestId('email-status')
+    expect(emailStatus.title).toBe('Campo obrigatório')
+  })
+  test('O status do input de email deve ser 🔴 ao inciar', () => {
+    const { getByTestId } = render(<Login />)
+    const emailStatus = getByTestId('email-status')
+    expect(emailStatus.textContent).toBe('🔴')
+  })
+  test('O status do input de senha deve estar com status obrigatório ao inciar', () => {
+    const { getByTestId } = render(<Login />)
+    const passwordtatus = getByTestId('password-status')
+    expect(passwordtatus.title).toBe('Campo obrigatório')
+  })
+  test('O status do input de senha deve ser 🔴 ao inciar', () => {
+    const { getByTestId } = render(<Login />)
+    const passwordtatus = getByTestId('password-status')
+    expect(passwordtatus.textContent).toBe('🔴')
+  })
 })
