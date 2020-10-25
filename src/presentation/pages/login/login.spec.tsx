@@ -11,6 +11,7 @@ type SutTypes = {
 
 const MakeSut = (): SutTypes => {
   const validationSpy = new ValidationSpy()
+  validationSpy.errorMessage = faker.random.word()
   const sut = render(<Login validation={validationSpy}/>)
   return {
     sut,
@@ -34,9 +35,9 @@ describe('Componente login', () => {
   })
 
   test('O status do input de email deve estar com status obrigatório ao inciar', () => {
-    const { sut } = MakeSut()
+    const { sut, validationSpy } = MakeSut()
     const emailStatus = sut.getByTestId('email-status')
-    expect(emailStatus.title).toBe('Campo obrigatório')
+    expect(emailStatus.title).toBe(validationSpy.errorMessage)
   })
 
   test('O status do input de email deve ser 🔴 ao inciar', () => {
@@ -87,5 +88,21 @@ describe('Componente login', () => {
     const password = faker.internet.password()
     fireEvent.input(passwordInput, { target: { value: password } })
     expect(validationSpy.fieldValue).toEqual(password)
+  })
+
+  test('Deve mostrar o erro no help do input do email quando a validação falhar', () => {
+    const { sut, validationSpy } = MakeSut()
+    const emailInput = sut.getByTestId('email')
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+    const emailStatus = sut.getByTestId('email-status')
+    expect(emailStatus.title).toBe(validationSpy.errorMessage)
+  })
+
+  test('Deve mostrar o status de erro no input do email quando a validação falhar', () => {
+    const { sut } = MakeSut()
+    const emailInput = sut.getByTestId('email')
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+    const emailStatus = sut.getByTestId('email-status')
+    expect(emailStatus.textContent).toBe('🔴')
   })
 })
