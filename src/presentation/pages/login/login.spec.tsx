@@ -1,5 +1,6 @@
 import React from 'react'
 import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
+import 'jest-localstorage-mock'
 import faker from 'faker'
 import Login from './login'
 import { ValidationStub, AuthenticationSpy } from '@/presentation/test'
@@ -50,6 +51,9 @@ const populatePasswordField = (sut: RenderResult, password = faker.internet.pass
 describe('Componente login', () => {
   afterEach(cleanup)
 
+  beforeEach(() => {
+    localStorage.clear()
+  })
   test('Não deve renderizar o spinner e o erro ao iniciar', () => {
     const { sut } = MakeSut()
     const errorWrap = sut.getByTestId('error-wrap')
@@ -204,5 +208,12 @@ describe('Componente login', () => {
     const errorWrap = sut.getByTestId('error-wrap')
     await waitFor(() => errorWrap)
     expect(errorWrap.childElementCount).toBe(1)
+  })
+
+  test('Deve adicionar o token de acesso no localstorage quando a autenticação for efetuada com sucesso', async () => {
+    const { sut, authenticationSpy } = MakeSut()
+    simulateValidSubmit(sut)
+    await waitFor(() => sut.getByTestId('form'))
+    expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
   })
 })
