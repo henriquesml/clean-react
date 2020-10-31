@@ -176,4 +176,11 @@ describe('Componente login', () => {
     simulateValidSubmit(sut)
     expect(authenticationSpy.callsCount).toBe(1)
   })
+
+  test('Não deve chamar o Authentication com o formulário inválido', () => {
+    const { sut, authenticationSpy } = MakeSut(MakeParams())
+    populateEmailField(sut)
+    fireEvent.submit(sut.getByTestId('form'))
+    expect(authenticationSpy.callsCount).toBe(0)
+  })
 })
