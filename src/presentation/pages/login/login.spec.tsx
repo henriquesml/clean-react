@@ -125,4 +125,14 @@ describe('Componente login', () => {
     const passwordStatus = sut.getByTestId('password-status')
     expect(passwordStatus.textContent).toBe('💚')
   })
+  test('Deve habilitar o botão de submit quando o formulário for válido', () => {
+    const { sut, validationStub } = MakeSut()
+    const emailInput = sut.getByTestId('email')
+    const passwordInput = sut.getByTestId('password')
+    validationStub.errorMessage = null
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+    fireEvent.input(passwordInput, { target: { value: faker.internet.password() } })
+    const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+    expect(submitButton.disabled).toBe(false)
+  })
 })
