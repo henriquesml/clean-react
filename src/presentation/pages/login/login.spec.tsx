@@ -1,8 +1,9 @@
 import React from 'react'
-import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
+import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
 import faker from 'faker'
 import Login from './login'
 import { ValidationStub, AuthenticationSpy } from '@/presentation/test'
+import { InvalidCredentialsError } from '@/domain/errors'
 
 type SutTypes = {
   sut: RenderResult
@@ -182,5 +183,26 @@ describe('Componente login', () => {
     populateEmailField(sut)
     fireEvent.submit(sut.getByTestId('form'))
     expect(authenticationSpy.callsCount).toBe(0)
+  })
+
+  test('Deve mostrar um erro se a authenticação falhar', async () => {
+    const { sut, authenticationSpy } = MakeSut()
+    const invalidCredentialsError = new InvalidCredentialsError()
+    jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(invalidCredentialsError))
+    simulateValidSubmit(sut)
+    const errorWrap = sut.getByTestId('error-wrap')
+    await waitFor(() => errorWrap)
+    const mainError = sut.getByTestId('main-error')
+    expect(mainError.textContent).toBe(invalidCredentialsError.message)
+  })
+
+  test('Deve esconder o spinner e somente mostrar o erro quando a autenticação falhar', async () => {
+    const { sut, authenticationSpy } = MakeSut()
+    const invalidCredentialsError = new InvalidCredentialsError()
+    jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(invalidCredentialsError))
+    simulateValidSubmit(sut)
+    const errorWrap = sut.getByTestId('error-wrap')
+    await waitFor(() => errorWrap)
+    expect(errorWrap.childElementCount).toBe(1)
   })
 })
