@@ -39,11 +39,12 @@ const MakeParams = (): SutParams => {
   return { validationError }
 }
 
-const simulateValidSubmit = (sut: RenderResult, email = faker.internet.email(), password = faker.internet.password()): void => {
+const simulateValidSubmit = async (sut: RenderResult, email = faker.internet.email(), password = faker.internet.password()): Promise<void> => {
   populateEmailField(sut, email)
   populatePasswordField(sut, password)
-  const submitButton = sut.getByTestId('submit')
-  fireEvent.click(submitButton)
+  const form = sut.getByTestId('form')
+  fireEvent.submit(form)
+  await waitFor(() => form)
 }
 
 const populateEmailField = (sut: RenderResult, email = faker.internet.email()): void => {
@@ -165,35 +166,34 @@ describe('Componente login', () => {
     expect(submitButton.disabled).toBe(false)
   })
 
-  test('Deve mostrar o spinner de loading no submit', () => {
+  test('Deve mostrar o spinner de loading no submit', async () => {
     const { sut } = MakeSut()
-    simulateValidSubmit(sut)
+    await simulateValidSubmit(sut)
     const spinner = sut.getByTestId('spinner')
     expect(spinner).toBeTruthy()
   })
 
-  test('Deve chamar o Authentication com os valores corretos', () => {
+  test('Deve chamar o Authentication com os valores corretos', async () => {
     const { sut, authenticationSpy } = MakeSut()
     const email = faker.internet.email()
     const password = faker.internet.password()
-    simulateValidSubmit(sut, email, password)
+    await simulateValidSubmit(sut, email, password)
     expect(authenticationSpy.params).toEqual({
       email,
       password
     })
   })
 
-  test('Deve chamar o Authentication somente uma vez', () => {
+  test('Deve chamar o Authentication somente uma vez', async () => {
     const { sut, authenticationSpy } = MakeSut()
-    simulateValidSubmit(sut)
-    simulateValidSubmit(sut)
+    await simulateValidSubmit(sut)
+    await simulateValidSubmit(sut)
     expect(authenticationSpy.callsCount).toBe(1)
   })
 
-  test('Não deve chamar o Authentication com o formulário inválido', () => {
+  test('Não deve chamar o Authentication com o formulário inválido', async () => {
     const { sut, authenticationSpy } = MakeSut(MakeParams())
-    populateEmailField(sut)
-    fireEvent.submit(sut.getByTestId('form'))
+    await simulateValidSubmit(sut)
     expect(authenticationSpy.callsCount).toBe(0)
   })
 
@@ -201,9 +201,7 @@ describe('Componente login', () => {
     const { sut, authenticationSpy } = MakeSut()
     const invalidCredentialsError = new InvalidCredentialsError()
     jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(invalidCredentialsError))
-    simulateValidSubmit(sut)
-    const errorWrap = sut.getByTestId('error-wrap')
-    await waitFor(() => errorWrap)
+    await simulateValidSubmit(sut)
     const mainError = sut.getByTestId('main-error')
     expect(mainError.textContent).toBe(invalidCredentialsError.message)
   })
@@ -212,30 +210,26 @@ describe('Componente login', () => {
     const { sut, authenticationSpy } = MakeSut()
     const invalidCredentialsError = new InvalidCredentialsError()
     jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(invalidCredentialsError))
-    simulateValidSubmit(sut)
+    await simulateValidSubmit(sut)
     const errorWrap = sut.getByTestId('error-wrap')
-    await waitFor(() => errorWrap)
     expect(errorWrap.childElementCount).toBe(1)
   })
 
   test('Deve adicionar o token de acesso no localstorage quando a autenticação for efetuada com sucesso', async () => {
     const { sut, authenticationSpy } = MakeSut()
-    simulateValidSubmit(sut)
-    await waitFor(() => sut.getByTestId('form'))
+    await simulateValidSubmit(sut)
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
   })
 
   test('Deve renderizar para / após a autenticação set efetuada com sucesso', async () => {
     const { sut } = MakeSut()
-    simulateValidSubmit(sut)
-    await waitFor(() => sut.getByTestId('form'))
+    await simulateValidSubmit(sut)
     expect(history.location.pathname).toBe('/')
   })
 
   test('Deve subistituir o historico após a autenticação set efetuada com sucesso', async () => {
     const { sut } = MakeSut()
-    simulateValidSubmit(sut)
-    await waitFor(() => sut.getByTestId('form'))
+    await simulateValidSubmit(sut)
     expect(history.length).toBe(1)
   })
 
