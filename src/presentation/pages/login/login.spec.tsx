@@ -17,7 +17,7 @@ type SutParams = {
   validationError: string
 }
 
-const history = createMemoryHistory()
+const history = createMemoryHistory({ initialEntries: ['/login'] })
 
 const MakeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
@@ -223,6 +223,20 @@ describe('Componente login', () => {
     simulateValidSubmit(sut)
     await waitFor(() => sut.getByTestId('form'))
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
+  })
+
+  test('Deve renderizar para / após a autenticação set efetuada com sucesso', async () => {
+    const { sut } = MakeSut()
+    simulateValidSubmit(sut)
+    await waitFor(() => sut.getByTestId('form'))
+    expect(history.location.pathname).toBe('/')
+  })
+
+  test('Deve subistituir o historico após a autenticação set efetuada com sucesso', async () => {
+    const { sut } = MakeSut()
+    simulateValidSubmit(sut)
+    await waitFor(() => sut.getByTestId('form'))
+    expect(history.length).toBe(1)
   })
 
   test('Deve fazer atualizar o historico de navegação ao clicar no botão de registrar', () => {
