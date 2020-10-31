@@ -1,4 +1,6 @@
 import React from 'react'
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
 import 'jest-localstorage-mock'
 import faker from 'faker'
@@ -15,11 +17,17 @@ type SutParams = {
   validationError: string
 }
 
+const history = createMemoryHistory()
+
 const MakeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   validationStub.errorMessage = params?.validationError
   const authenticationSpy = new AuthenticationSpy()
-  const sut = render(<Login validation={validationStub} authentication={authenticationSpy}/>)
+  const sut = render(
+    <Router history={history}>
+      <Login validation={validationStub} authentication={authenticationSpy}/>
+    </Router>
+  )
   return {
     sut,
     authenticationSpy
@@ -215,5 +223,20 @@ describe('Componente login', () => {
     simulateValidSubmit(sut)
     await waitFor(() => sut.getByTestId('form'))
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
+  })
+
+  test('Deve fazer atualizar o historico de navegação ao clicar no botão de registrar', () => {
+    const { sut } = MakeSut()
+    const historyCount = history.length
+    const register = sut.getByTestId('register')
+    fireEvent.click(register)
+    expect(history.length).toBe(historyCount + 1)
+  })
+
+  test('Deve navegar para a pagina de cadastro', () => {
+    const { sut } = MakeSut()
+    const register = sut.getByTestId('register')
+    fireEvent.click(register)
+    expect(history.location.pathname).toBe('/register')
   })
 })
