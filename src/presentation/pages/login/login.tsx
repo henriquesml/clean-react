@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Styles from './login-styles.scss'
 import {
   LoginHeader as Header,
@@ -76,9 +77,9 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
             Entrar
           </button>
 
-          <span className={Styles.link}>
+          <Link to='/register' data-testid='register' className={Styles.link}>
             Não possui um conta? Crie uma agora mesmo!
-          </span>
+          </Link>
           <FormStatus />
         </form>
       </FormContext.Provider>
