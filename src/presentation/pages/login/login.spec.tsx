@@ -224,6 +224,15 @@ describe('Componente login', () => {
     expect(saveAccessTokenMock.accessToken).toBe(authenticationSpy.account.accessToken)
   })
 
+  test('Deve mostrar um erro se SaveAccessToken falhar', async () => {
+    const { sut, saveAccessTokenMock } = MakeSut()
+    const invalidCredentialsError = new InvalidCredentialsError()
+    jest.spyOn(saveAccessTokenMock, 'save').mockReturnValueOnce(Promise.reject(invalidCredentialsError))
+    await simulateValidSubmit(sut)
+    const mainError = sut.getByTestId('main-error')
+    expect(mainError.textContent).toBe(invalidCredentialsError.message)
+  })
+
   test('Deve renderizar para / após a autenticação set efetuada com sucesso', async () => {
     const { sut } = MakeSut()
     await simulateValidSubmit(sut)
