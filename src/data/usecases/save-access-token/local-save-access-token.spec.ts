@@ -1,33 +1,33 @@
 import faker from 'faker'
 import { LocalSaveAccessToken } from './local-save-access-token'
-import { SetStorageSpy } from '@/data/test'
+import { SetStorageMock } from '@/data/test'
 
 type SutTypes = {
   sut: LocalSaveAccessToken
-  setStorageSpy: SetStorageSpy
+  setStorageMock: SetStorageMock
 }
 
 const makeSut = (): SutTypes => {
-  const setStorageSpy = new SetStorageSpy()
-  const sut = new LocalSaveAccessToken(setStorageSpy)
+  const setStorageMock = new SetStorageMock()
+  const sut = new LocalSaveAccessToken(setStorageMock)
   return {
     sut,
-    setStorageSpy
+    setStorageMock
   }
 }
 
 describe('LocalSaveAccessToken', () => {
   test('deve chama o setStorage correto', async () => {
-    const { sut, setStorageSpy } = makeSut()
+    const { sut, setStorageMock } = makeSut()
     const accessToken = faker.random.uuid()
     await sut.save(accessToken)
-    expect(setStorageSpy.key).toBe('accessToken')
+    expect(setStorageMock.key).toBe('accessToken')
   })
 
   test('deve chamar o setStorage com o valor correto', async () => {
-    const { sut, setStorageSpy } = makeSut()
+    const { sut, setStorageMock } = makeSut()
     const accessToken = faker.random.uuid()
     await sut.save(accessToken)
-    expect(setStorageSpy.value).toBe(accessToken)
+    expect(setStorageMock.value).toBe(accessToken)
   })
 })
