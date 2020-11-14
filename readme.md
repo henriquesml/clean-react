@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/henriquesml/clean-react.svg?branch=master)](https://travis-ci.org/henriquesml/clean-react)
+[![Coverage Status](https://coveralls.io/repos/github/henriquesml/clean-react/badge.svg)](https://coveralls.io/github/henriquesml/clean-react)
 
 # **Clean React**
 
