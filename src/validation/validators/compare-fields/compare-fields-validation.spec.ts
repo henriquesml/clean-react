@@ -10,4 +10,11 @@ describe('CompareFieldsValidation', () => {
     const error = sut.validate(faker.random.word())
     expect(error).toEqual(new InvalidFieldError(sut.field))
   })
+
+  test('Deve retronar falsy se a comparação dos campos for válida', () => {
+    const valueToCompare = faker.random.word()
+    const sut = makeSut(valueToCompare)
+    const error = sut.validate(valueToCompare)
+    expect(error).toBeFalsy()
+  })
 })
